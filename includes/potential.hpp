@@ -3,7 +3,7 @@
 
 class Potential{
 	private:
-		float lambda, eta, epsilon;
+		float lambda, eta, woof;
 	public:
 		Potential();
 		float get_lambda();

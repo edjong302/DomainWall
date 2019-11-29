@@ -12,7 +12,7 @@ DomainWall::DomainWall(){
     eta = 0.01;
     L = 1;
     N = 199;
-    alpha = 0.1;
+    alpha = 0.05;
     t_max = 20;
     std::vector<float> ivec(N);
     std::vector<float> iivec(N);
@@ -69,6 +69,8 @@ void DomainWall::evolve_to_the_end(){
         write_phi("output.txt");
         steps += 1;
     }
+    std::string Fliss = "woof";
+    std::cout << Fliss << std::endl;
     
 }
 
