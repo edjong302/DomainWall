@@ -54,12 +54,12 @@ void DomainWall::set_initial_conditions(){
 void DomainWall::take_step(){
     current_state_phi = new_state_phi;
     current_state_psi = new_state_psi;
-    std::vector<float> phi_slope = time_evol.slope(current_state_psi);
-    std::vector<float> psi_slope;
+    std::vector<float> phi_slope = time_evol.slope_phi_rk1(current_state_psi);
+    std::vector<float> psi_slope = time_evol.slope_psi_rk1(current_state_phi, float(L)/(N + 1));
     for (int i = 0; i < N; i++){
-        new_state_phi[i] = current_state_phi[i] + alpha*float(L)/(N + 1)*phi_slope[i];
+        new_state_phi[i] = current_state_phi[i] + alpha*float(L)/(N + 1.0)*phi_slope[i];
         //new_state_psi[i] = current_state_psi[i] + alpha*(float(N) + 1.0)/L*(current_state_phi[(i + N - 1)%N] - 2*current_state_phi[i] + current_state_phi[(i + 1)%N]) - alpha*float(L)/(N + 1)*lambda*current_state_phi[i%N]*(current_state_phi[i]*current_state_phi[i] - eta*eta);
-        new_state_psi[i] = current_state_psi[i] + alpha*(float(N) + 1.0)/L*(current_state_phi[(i + N - 1)%N] - 2*current_state_phi[i] + current_state_phi[(i + 1)%N]) - potential.dPotentialdfield(current_state_phi[i]);
+        new_state_psi[i] = current_state_psi[i] + alpha*float(L)/(N + 1.0)*(psi_slope[i] - potential.dPotentialdfield(current_state_phi[i]));
     }
 }
 
