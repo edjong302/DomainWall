@@ -4,6 +4,7 @@
 #include <string>
 #include "potential.hpp"
 #include "initial_conditions.hpp"
+#include "time_evolution.hpp"
 
 class DomainWall{
     private:
@@ -15,6 +16,7 @@ class DomainWall{
         std::vector<float> current_state_psi;
         Potential potential;
         initial_conditions init_cond;
+        time_evolution time_evol;
     public:
         DomainWall();
         int get_L();
