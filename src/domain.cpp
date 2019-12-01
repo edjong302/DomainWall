@@ -9,12 +9,10 @@
 using namespace std;
 
 DomainWall::DomainWall(){
-    lambda = 2000.0;
-    eta = 0.01;
     L = 1;
-    N = 199;
+    N = 399;
     alpha = 0.05;
-    t_max = 20;
+    t_max = 5;
     std::vector<float> ivec(N);
     std::vector<float> iivec(N);
     std::vector<float> iiivec(N);
@@ -39,27 +37,31 @@ std::vector<float> DomainWall::get_new_state_phi(){
 
 void DomainWall::set_initial_conditions(){
 	float dx = float(L)/(N + 1);
-	float offset1 = 0.25*L;
-	float offset2 = 0.75*L;
-	float sigma = 0.01*L;
+	float offset1 = 0.3*L;
+	float offset2 = 0.7*L;
+	float sigma = 0.02*L;
     for (int i = 0; i < N; i++){
-        current_state_phi[i] = init_cond.phi_init(init_cond.get_offset1(), init_cond.get_offset2(), init_cond.get_sigma(), i*dx);
-        new_state_phi[i] = init_cond.phi_init(init_cond.get_offset1(), init_cond.get_offset2(), init_cond.get_sigma(), i*dx);
+        current_state_phi[i] = init_cond.phi_init(offset1, offset2, sigma, i*dx);
+        new_state_phi[i] = init_cond.phi_init(offset1, offset2, sigma, i*dx);
         current_state_psi[i] = 0.0;
         new_state_psi[i] = 0.0;
     }
     write_phi("output.txt");
 }
 
-void DomainWall::take_step(){
+void DomainWall::take_step(float i_steps){
     current_state_phi = new_state_phi;
     current_state_psi = new_state_psi;
-    std::vector<float> phi_slope = time_evol.slope_phi_rk1(current_state_psi);
-    std::vector<float> psi_slope = time_evol.slope_psi_rk1(current_state_phi, float(L)/(N + 1));
+    float dx = float(L)/(N + 1);
+    std::vector<float> phi_slope = time_evol.rk1_phi(current_state_psi);
+    std::vector<float> psi_slope = time_evol.rk1_psi(current_state_phi, dx);
     for (int i = 0; i < N; i++){
-        new_state_phi[i] = current_state_phi[i] + alpha*float(L)/(N + 1.0)*phi_slope[i];
+        if (i_steps == 4.){
+            std::cout << psi_slope[i] << std::endl;
+        }
+        new_state_phi[i] = current_state_phi[i] + alpha*dx*phi_slope[i];
         //new_state_psi[i] = current_state_psi[i] + alpha*(float(N) + 1.0)/L*(current_state_phi[(i + N - 1)%N] - 2*current_state_phi[i] + current_state_phi[(i + 1)%N]) - alpha*float(L)/(N + 1)*lambda*current_state_phi[i%N]*(current_state_phi[i]*current_state_phi[i] - eta*eta);
-        new_state_psi[i] = current_state_psi[i] + alpha*float(L)/(N + 1.0)*(psi_slope[i] - potential.dPotentialdfield(current_state_phi[i]));
+        new_state_psi[i] = current_state_psi[i] + alpha*dx*psi_slope[i];
     }
 }
 
@@ -68,9 +70,9 @@ void DomainWall::evolve_to_the_end(){
     std::cout << max_steps << std::endl;
     float steps = 0;
     while (steps < max_steps){
-        take_step();
+        take_step(steps);
         write_phi("output.txt");
-        steps += 1;
+        steps += 1.;
     }
     std::string Fliss = "woof";
     std::cout << Fliss << std::endl;

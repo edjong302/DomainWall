@@ -2,7 +2,6 @@
 #define DOMAIN_H
 #include <vector>
 #include <string>
-#include "potential.hpp"
 #include "initial_conditions.hpp"
 #include "time_evolution.hpp"
 
@@ -14,7 +13,6 @@ class DomainWall{
         std::vector<float> current_state_phi;
         std::vector<float> new_state_psi;
         std::vector<float> current_state_psi;
-        Potential potential;
         initial_conditions init_cond;
         time_evolution time_evol;
     public:
@@ -23,7 +21,7 @@ class DomainWall{
         std::vector<float> get_new_state_phi();
         std::vector<float> get_current_state_phi();
         void set_initial_conditions();
-        void take_step();
+        void take_step(float i_steps);
         void evolve_to_the_end();
         void write_phi(std::string filename);
         void write_grid(std::string filename);
