@@ -9,10 +9,10 @@
 using namespace std;
 
 DomainWall::DomainWall(){
-    L = 1;
+    L = 200;
     N = 500;
     alpha = 0.1;
-    t_max = .1;
+    t_max = 100;
     std::vector<float> ivec(N);
     std::vector<float> iivec(N);
     std::vector<float> iiivec(N);

@@ -5,9 +5,9 @@
 using namespace std;
 
 time_evolution::time_evolution(){
-	lambda = 8000000.;
-	eta = 0.02;
-	woof = 0.0;
+	lambda = 2000.;
+	eta = 0.01;
+	woof = 0.0005;
 }
 
 float time_evolution::the_Potential(float field){
