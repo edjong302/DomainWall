@@ -9,10 +9,10 @@
 using namespace std;
 
 DomainWall::DomainWall(){
-    L = 200;
+    L = 250;
     N = 500;
     alpha = 0.1;
-    t_max = 100;
+    t_max = 200;
     std::vector<float> ivec(N);
     std::vector<float> iivec(N);
     std::vector<float> iiivec(N);
@@ -67,8 +67,8 @@ void DomainWall::take_step(float i_steps){
     current_state_phi = new_state_phi;
     current_state_psi = new_state_psi;
     float dx = float(L)/(N);
-    std::vector<float> phi_slope = time_evol.rk2_phi(current_state_phi, current_state_psi, dx, alpha);
-    std::vector<float> psi_slope = time_evol.rk2_psi(current_state_phi, current_state_psi, dx, alpha);
+    std::vector<float> phi_slope = time_evol.rk4_phi(current_state_phi, current_state_psi, dx, alpha);
+    std::vector<float> psi_slope = time_evol.rk4_psi(current_state_phi, current_state_psi, dx, alpha);
     for (int i = 0; i < N; i++){
         // if (i_steps == 4.){
         //     std::cout << psi_slope[i] << std::endl;
