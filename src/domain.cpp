@@ -10,17 +10,17 @@ using namespace std;
 
 DomainWall::DomainWall(){
     L = 1;
-    N = 199;
-    alpha = 0.05;
-    t_max = .05;
+    N = 500;
+    alpha = 0.1;
+    t_max = .1;
     std::vector<float> ivec(N);
     std::vector<float> iivec(N);
     std::vector<float> iiivec(N);
-    std::vector<float> iiiivec(N);
+    std::vector<float> ivvec(N);
     current_state_phi = ivec;
     new_state_phi = iivec;
     current_state_psi = iiivec;
-    new_state_psi = iiiivec;
+    new_state_psi = ivvec;
 };
 
 int DomainWall::get_L(){
@@ -36,7 +36,7 @@ std::vector<float> DomainWall::get_new_state_phi(){
 }
 
 void DomainWall::set_initial_conditions(){
-	float dx = float(L)/(N + 1);
+    float dx = float(L)/N;
 	float offset1 = 0.3*L;
 	float offset2 = 0.7*L;
 	float sigma = 0.02*L;
@@ -49,27 +49,9 @@ void DomainWall::set_initial_conditions(){
     write_phi("output.txt");
 }
 
-void DomainWall::take_step(float i_steps){
-    current_state_phi = new_state_phi;
-    current_state_psi = new_state_psi;
-    float dx = float(L)/(N + 1);
-    std::vector<float> phi_slope = time_evol.rk1_phi(current_state_phi, current_state_psi, dx, alpha);
-    std::vector<float> psi_slope = time_evol.rk1_psi(current_state_phi, current_state_psi, dx, alpha);
-    std::cout << "woof" << std::endl;
-    for (int i = 0; i < N; i++){
-        // if (i_steps == 4.){
-        //     std::cout << psi_slope[i] << std::endl;
-        // }
-        new_state_phi[i] = current_state_phi[i] + alpha*dx*phi_slope[i];
-        //new_state_psi[i] = current_state_psi[i] + alpha*(float(N) + 1.0)/L*(current_state_phi[(i + N - 1)%N] - 2*current_state_phi[i] + current_state_phi[(i + 1)%N]) - alpha*float(L)/(N + 1)*lambda*current_state_phi[i%N]*(current_state_phi[i]*current_state_phi[i] - eta*eta);
-        new_state_psi[i] = current_state_psi[i] + alpha*dx*psi_slope[i];
-    }
-    std::cout << i_steps << std::endl;
-}
-
 void DomainWall::evolve_to_the_end(){
-    float max_steps = (t_max*N + t_max)/(alpha*L);
-    std::cout << max_steps << std::endl;
+    float max_steps = (t_max*N)/(alpha*L);
+    std::cout << "max steps"<< " " << max_steps << std::endl;
     float steps = 0;
     while (steps < max_steps){
         take_step(steps);
@@ -79,6 +61,23 @@ void DomainWall::evolve_to_the_end(){
     std::string Fliss = "woof";
     std::cout << Fliss << std::endl;
     
+}
+
+void DomainWall::take_step(float i_steps){
+    current_state_phi = new_state_phi;
+    current_state_psi = new_state_psi;
+    float dx = float(L)/(N);
+    std::vector<float> phi_slope = time_evol.rk2_phi(current_state_phi, current_state_psi, dx, alpha);
+    std::vector<float> psi_slope = time_evol.rk2_psi(current_state_phi, current_state_psi, dx, alpha);
+    for (int i = 0; i < N; i++){
+        // if (i_steps == 4.){
+        //     std::cout << psi_slope[i] << std::endl;
+        // }
+        new_state_phi[i] = current_state_phi[i] + alpha*dx*phi_slope[i];
+        //new_state_psi[i] = current_state_psi[i] + alpha*(float(N) + 1.0)/L*(current_state_phi[(i + N - 1)%N] - 2*current_state_phi[i] + current_state_phi[(i + 1)%N]) - alpha*float(L)/(N + 1)*lambda*current_state_phi[i%N]*(current_state_phi[i]*current_state_phi[i] - eta*eta);
+        new_state_psi[i] = current_state_psi[i] + alpha*dx*psi_slope[i];
+    }
+    //std::cout << i_steps << std::endl;
 }
 
 void DomainWall::delete_files(std::string filename1, std::string filename2, std::string filename3){

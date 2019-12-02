@@ -8,7 +8,7 @@
 class DomainWall{
     private:
         int L, N;
-        float lambda, eta, alpha, t_max;
+        float alpha, t_max;
         std::vector<float> new_state_phi;
         std::vector<float> current_state_phi;
         std::vector<float> new_state_psi;

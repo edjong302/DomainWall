@@ -5,9 +5,9 @@
 using namespace std;
 
 time_evolution::time_evolution(){
-	lambda = 2000.0;
-	eta = 1.3;
-	woof = 250.0;
+	lambda = 8000000.;
+	eta = 0.02;
+	woof = 0.0;
 }
 
 float time_evolution::the_Potential(float field){
@@ -37,18 +37,24 @@ std::vector<float> time_evolution::rk1_psi(std::vector<float> i_vector, std::vec
 std::vector<float> time_evolution::rk2_phi(std::vector<float> i_vector, std::vector<float> ii_vector, float i_dx, float i_alpha){
 	int size = i_vector.size();
 	std::vector<float> result(size);
+	std::vector<float> l0_v = l0_phi(i_vector, ii_vector, i_dx, i_alpha);
+	std::vector<float> l1_v = l1_phi(l0_v, i_vector, ii_vector, i_dx, i_alpha);
 	for (int i = 0; i < size; i++){
-			result[i] = (l0_phi(i_vector, ii_vector, i_dx, i_alpha)[i] + l1_phi(i_vector, ii_vector, i_dx, i_alpha)[i])/2;
-		}
+		result[i] = (l0_v[i] + l1_v[i])/2;
+		//result[i] = l1_v[i];
+	}
 	return result;
 }
 
 std::vector<float> time_evolution::rk2_psi(std::vector<float> i_vector, std::vector<float> ii_vector, float i_dx, float i_alpha){
 	int size = i_vector.size();
 	std::vector<float> result(size);
+	std::vector<float> l0_v = l0_psi(i_vector, ii_vector, i_dx, i_alpha);
+	std::vector<float> l1_v = l1_psi(l0_v, i_vector, ii_vector, i_dx, i_alpha);
 	for (int i = 0; i < size; i++){
-			result[i] = (l0_psi(i_vector, ii_vector, i_dx, i_alpha)[i] + l1_psi(i_vector, ii_vector, i_dx, i_alpha)[i])/2;
-		}
+		result[i] = (l0_v[i] + l1_v[i])/2;
+		//result[i] = l1_v[i];
+	}
 	return result;
 }
 
@@ -61,28 +67,31 @@ std::vector<float> time_evolution::l0_psi(std::vector<float> i_vector, std::vect
 	int size = i_vector.size();
 	std::vector<float> result(size);
 	for (int i = 0; i < size; i++){
-		result[i] = (i_vector[(i - 1 + size)%size] - 2*i_vector[i] + i_vector[(i + 1)%size])/(i_dx*i_dx) -1.*dPotentialdfield(i_vector[i]);
+		result[i] = (i_vector[(i + size - 1)%size] - 2*i_vector[i] + i_vector[(i + 1)%size])/(i_dx*i_dx) -1.*dPotentialdfield(i_vector[i]);
 	}
-	// 	result[i] = (i_vector[(i - 1 + size)%size] - 2*i_vector[i] + i_vector[(i + 1)%size])/(i_dx*i_dx) - dPotentialdfield(i_vector[i]);
 	return result;
 }
 
-std::vector<float> time_evolution::l1_phi(std::vector<float> i_vector, std::vector<float> ii_vector, float i_dx, float i_alpha){
+std::vector<float> time_evolution::l1_phi(std::vector<float> i_l0, std::vector<float> i_vector, std::vector<float> ii_vector, float i_dx, float i_alpha){
 	int size = i_vector.size();
+	//std::cout << size << std::endl;
 	std::vector<float> result(size);
-	for (int i = 0; i < size - 1; i++){
-		result[i] = ii_vector[i] + i_alpha*i_dx*l0_psi(i_vector, ii_vector, i_dx, i_alpha)[i];
+	for (int i = 0; i < size; i++){
+		result[i] = ii_vector[i] + i_alpha*i_dx*i_l0[i];
 		}
 	return result;
 }
 
-std::vector<float> time_evolution::l1_psi(std::vector<float> i_vector, std::vector<float> ii_vector, float i_dx, float i_alpha){
+std::vector<float> time_evolution::l1_psi(std::vector<float> i_l0, std::vector<float> i_vector, std::vector<float> ii_vector, float i_dx, float i_alpha){
 	int size = i_vector.size();
+	//std::cout << size << std::endl;
 	std::vector<float> result(size);
 	std::vector<float> phi_temp(size);
-	for (int i = 0; i < size - 1; i++){
-		phi_temp[i] = i_vector[i] + i_alpha*i_dx*l0_phi(i_vector, ii_vector, i_dx, i_alpha)[i];
-		result[i] = (phi_temp[(i - 1 + size)%size] - 2*phi_temp[i] + phi_temp[(i + 1)%size])/(i_dx*i_dx) -1.*dPotentialdfield(phi_temp[i]);
-		}
+	for (int i = 0; i < size; i++){
+		phi_temp[i] = i_vector[i] + i_alpha*i_dx*i_l0[i];
+	}
+	for (int i = 0; i < size; i++){
+		result[i] = (phi_temp[(i + size - 1)%size] - 2*phi_temp[i] + phi_temp[(i + 1)%size])/(i_dx*i_dx) -1.*dPotentialdfield(phi_temp[i]);
+	}
 	return result;
 }
