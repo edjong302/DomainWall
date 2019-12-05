@@ -7,7 +7,8 @@ using namespace std;
 time_evolution::time_evolution(){
 	lambda = 2000.;
 	eta = 0.01;
-	woof = 0.000;
+	woof = 0.;
+	kreiss = 0.8; // 1 for dissipation, 0 for not
 }
 
 float time_evolution::the_Potential(float field){
@@ -68,6 +69,7 @@ std::vector<float> time_evolution::rk4_phi(std::vector<float> i_vector, std::vec
 	for (int i = 0; i < size; i++){
 		//result[i] = (l0_v[i] + l1_v[i])/2;
 		result[i] = (l0_v[i] + 2.*l1_v[i] + 2.*l2_v[i] + l3_v[i])/6.;
+		result[i] += kreiss/(64.*i_dx)*(i_vector[(i + 3)%size] - 6.*i_vector[(i + 2)%size] + 15.*i_vector[(i + 1)%size] -20.*i_vector[i] + 15.*i_vector[(i - 1 + size)%size] - 6.*i_vector[(i - 2 + size)%size] + i_vector[(i - 3 + size)%size]);
 	}
 	return result;
 }
@@ -82,6 +84,7 @@ std::vector<float> time_evolution::rk4_psi(std::vector<float> i_vector, std::vec
 	for (int i = 0; i < size; i++){
 		//result[i] = (l0_v[i] + l1_v[i])/2;
 		result[i] = (l0_v[i] + 2.*l1_v[i] + 2.*l2_v[i] + l3_v[i])/6.;
+		result[i] += kreiss/(64.*i_dx)*(ii_vector[(i + 3)%size] - 6.*ii_vector[(i + 2)%size] + 15.*ii_vector[(i + 1)%size] -20.*ii_vector[i] + 15.*ii_vector[(i - 1 + size)%size] - 6.*ii_vector[(i - 2 + size)%size] + ii_vector[(i - 3 + size)%size]);
 	}
 	return result;
 }

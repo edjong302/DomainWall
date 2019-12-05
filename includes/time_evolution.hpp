@@ -7,6 +7,7 @@ using namespace std;
 class time_evolution{
 	private:
 		float lambda, eta, woof;
+		int kreiss;
 	public:
 		time_evolution();
 		float get_lambda();

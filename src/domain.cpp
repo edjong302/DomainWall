@@ -9,10 +9,10 @@
 using namespace std;
 
 DomainWall::DomainWall(){
-    L = 250;
-    N = 500;
-    alpha = 0.1;
-    t_max = 200;
+    L = 200;
+    N = 2001;
+    alpha = 0.01;
+    t_max = 1.;
     std::vector<float> ivec(N);
     std::vector<float> iivec(N);
     std::vector<float> iiivec(N);
@@ -36,7 +36,7 @@ std::vector<float> DomainWall::get_new_state_phi(){
 }
 
 void DomainWall::set_initial_conditions(){
-    float dx = float(L)/N;
+    float dx = float(L)/(N - 1);
 	float offset1 = 0.3*L;
 	float offset2 = 0.7*L;
 	float sigma = 0.02*L;
@@ -45,17 +45,20 @@ void DomainWall::set_initial_conditions(){
         new_state_phi[i] = init_cond.phi_init(offset1, offset2, sigma, i*dx);
         current_state_psi[i] = 0.0;
         new_state_psi[i] = 0.0;
+        std::cout << current_state_psi[i] << std::endl;
     }
     write_phi("output.txt");
 }
 
 void DomainWall::evolve_to_the_end(){
-    float max_steps = (t_max*N)/(alpha*L);
+    float max_steps = (t_max*(N - 1))/(alpha*L);
     std::cout << "max steps"<< " " << max_steps << std::endl;
     float steps = 0;
     while (steps < max_steps){
         take_step(steps);
-        write_phi("output.txt");
+        if (int(steps)%100 == 0){
+            write_phi("output.txt");
+        }
         steps += 1.;
     }
     std::string Fliss = "woof";
@@ -66,9 +69,9 @@ void DomainWall::evolve_to_the_end(){
 void DomainWall::take_step(float i_steps){
     current_state_phi = new_state_phi;
     current_state_psi = new_state_psi;
-    float dx = float(L)/(N);
-    std::vector<float> phi_slope = time_evol.rk4_phi(current_state_phi, current_state_psi, dx, alpha);
-    std::vector<float> psi_slope = time_evol.rk4_psi(current_state_phi, current_state_psi, dx, alpha);
+    float dx = float(L)/(N - 1);
+    std::vector<float> phi_slope = time_evol.rk2_phi(current_state_phi, current_state_psi, dx, alpha);
+    std::vector<float> psi_slope = time_evol.rk2_psi(current_state_phi, current_state_psi, dx, alpha);
     for (int i = 0; i < N; i++){
         // if (i_steps == 4.){
         //     std::cout << psi_slope[i] << std::endl;
@@ -105,7 +108,7 @@ void DomainWall::write_grid(std::string filename){
     std::ofstream outfile;
     outfile.open(filename, std::ios_base::app);
     for (int i = 0; i < N; i++){
-        outfile << i*float(L)/(N + 1) << std::endl;
+        outfile << i*float(L)/(N - 1) << std::endl;
     }
     outfile.close();
 }

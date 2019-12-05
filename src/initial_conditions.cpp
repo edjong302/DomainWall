@@ -14,8 +14,12 @@ float initial_conditions::get_sigma(){
 }
 
 float initial_conditions::phi_init(float i_offset1, float i_offset2, float i_sigma, float i_x){
+	// Domain wall:
 	return -0.01*(tanh((i_x - i_offset1)/i_sigma) - tanh((i_x - i_offset2)/i_sigma) - 1);
-	//return 0.0201;
+	// Vacuum with small perturbation:
+	//return 0.01 + 0.0001*exp(-pow(-(i_x - 100.),2.)/100.);
+	// Stable vacuum:
+	//return 0.01;
 }
 
 float initial_conditions::psi_init(float i_offset1, float i_offset2, float i_sigma, float i_x){
