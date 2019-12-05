@@ -1,19 +1,19 @@
 #include "initial_conditions.hpp"
 #include <math.h>
 
-float initial_conditions::get_offset1(){
+double initial_conditions::get_offset1(){
 	return offset1;
 }
 
-float initial_conditions::get_offset2(){
+double initial_conditions::get_offset2(){
 	return offset2;
 }
 
-float initial_conditions::get_sigma(){
+double initial_conditions::get_sigma(){
 	return sigma;
 }
 
-float initial_conditions::phi_init(float i_offset1, float i_offset2, float i_sigma, float i_x){
+double initial_conditions::phi_init(double i_offset1, double i_offset2, double i_sigma, double i_x){
 	// Domain wall:
 	return -0.01*(tanh((i_x - i_offset1)/i_sigma) - tanh((i_x - i_offset2)/i_sigma) - 1);
 	// Vacuum with small perturbation:
@@ -22,6 +22,6 @@ float initial_conditions::phi_init(float i_offset1, float i_offset2, float i_sig
 	//return 0.01;
 }
 
-float initial_conditions::psi_init(float i_offset1, float i_offset2, float i_sigma, float i_x){
+double initial_conditions::psi_init(double i_offset1, double i_offset2, double i_sigma, double i_x){
 	return 0.;
 }

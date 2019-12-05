@@ -3,15 +3,15 @@
 
 class initial_conditions{
 	private:
-		float offset1 = 0.25;
-		float offset2 = 0.75;
-		float sigma = 0.05;
+		double offset1 = 0.25;
+		double offset2 = 0.75;
+		double sigma = 0.05;
 	public:
-		float get_offset1();
-		float get_offset2();
-		float get_sigma();
-		float phi_init(float i_offset1, float i_offset2, float i_sigma, float i_x);
-		float psi_init(float i_offset1, float i_offset2, float i_sigma, float i_x);
+		double get_offset1();
+		double get_offset2();
+		double get_sigma();
+		double phi_init(double i_offset1, double i_offset2, double i_sigma, double i_x);
+		double psi_init(double i_offset1, double i_offset2, double i_sigma, double i_x);
 };
 
 #endif

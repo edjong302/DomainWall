@@ -13,10 +13,10 @@ DomainWall::DomainWall(){
     N = 2001;
     alpha = 0.01;
     t_max = 1.;
-    std::vector<float> ivec(N);
-    std::vector<float> iivec(N);
-    std::vector<float> iiivec(N);
-    std::vector<float> ivvec(N);
+    std::vector<double> ivec(N);
+    std::vector<double> iivec(N);
+    std::vector<double> iiivec(N);
+    std::vector<double> ivvec(N);
     current_state_phi = ivec;
     new_state_phi = iivec;
     current_state_psi = iiivec;
@@ -27,19 +27,19 @@ int DomainWall::get_L(){
     return L;
 };
 
-std::vector<float> DomainWall::get_current_state_phi(){
+std::vector<double> DomainWall::get_current_state_phi(){
     return current_state_phi;
 }
 
-std::vector<float> DomainWall::get_new_state_phi(){
+std::vector<double> DomainWall::get_new_state_phi(){
     return new_state_phi;
 }
 
 void DomainWall::set_initial_conditions(){
-    float dx = float(L)/(N - 1);
-	float offset1 = 0.3*L;
-	float offset2 = 0.7*L;
-	float sigma = 0.02*L;
+    double dx = double(L)/(N - 1);
+	double offset1 = 0.3*L;
+	double offset2 = 0.7*L;
+	double sigma = 0.02*L;
     for (int i = 0; i < N; i++){
         current_state_phi[i] = init_cond.phi_init(offset1, offset2, sigma, i*dx);
         new_state_phi[i] = init_cond.phi_init(offset1, offset2, sigma, i*dx);
@@ -51,9 +51,9 @@ void DomainWall::set_initial_conditions(){
 }
 
 void DomainWall::evolve_to_the_end(){
-    float max_steps = (t_max*(N - 1))/(alpha*L);
+    double max_steps = (t_max*(N - 1))/(alpha*L);
     std::cout << "max steps"<< " " << max_steps << std::endl;
-    float steps = 0;
+    double steps = 0;
     while (steps < max_steps){
         take_step(steps);
         if (int(steps)%100 == 0){
@@ -66,18 +66,18 @@ void DomainWall::evolve_to_the_end(){
     
 }
 
-void DomainWall::take_step(float i_steps){
+void DomainWall::take_step(double i_steps){
     current_state_phi = new_state_phi;
     current_state_psi = new_state_psi;
-    float dx = float(L)/(N - 1);
-    std::vector<float> phi_slope = time_evol.rk2_phi(current_state_phi, current_state_psi, dx, alpha);
-    std::vector<float> psi_slope = time_evol.rk2_psi(current_state_phi, current_state_psi, dx, alpha);
+    double dx = double(L)/(N - 1);
+    std::vector<double> phi_slope = time_evol.rk2_phi(current_state_phi, current_state_psi, dx, alpha);
+    std::vector<double> psi_slope = time_evol.rk2_psi(current_state_phi, current_state_psi, dx, alpha);
     for (int i = 0; i < N; i++){
         // if (i_steps == 4.){
         //     std::cout << psi_slope[i] << std::endl;
         // }
         new_state_phi[i] = current_state_phi[i] + alpha*dx*phi_slope[i];
-        //new_state_psi[i] = current_state_psi[i] + alpha*(float(N) + 1.0)/L*(current_state_phi[(i + N - 1)%N] - 2*current_state_phi[i] + current_state_phi[(i + 1)%N]) - alpha*float(L)/(N + 1)*lambda*current_state_phi[i%N]*(current_state_phi[i]*current_state_phi[i] - eta*eta);
+        //new_state_psi[i] = current_state_psi[i] + alpha*(double(N) + 1.0)/L*(current_state_phi[(i + N - 1)%N] - 2*current_state_phi[i] + current_state_phi[(i + 1)%N]) - alpha*double(L)/(N + 1)*lambda*current_state_phi[i%N]*(current_state_phi[i]*current_state_phi[i] - eta*eta);
         new_state_psi[i] = current_state_psi[i] + alpha*dx*psi_slope[i];
     }
     //std::cout << i_steps << std::endl;
@@ -108,7 +108,7 @@ void DomainWall::write_grid(std::string filename){
     std::ofstream outfile;
     outfile.open(filename, std::ios_base::app);
     for (int i = 0; i < N; i++){
-        outfile << i*float(L)/(N - 1) << std::endl;
+        outfile << i*double(L)/(N - 1) << std::endl;
     }
     outfile.close();
 }
@@ -116,9 +116,9 @@ void DomainWall::write_grid(std::string filename){
 void DomainWall::write_time(std::string filename){
     std::ofstream outfile;
     outfile.open(filename, std::ios_base::app);
-    float dx = float(L)/(N + 1);
+    double dx = double(L)/(N + 1);
     int N_max = t_max/(alpha*dx);
-    float dt = alpha*dx;
+    double dt = alpha*dx;
     for (int i = 0; i < N_max + 1; i++){
         outfile << i*dt << std::endl;
     }
