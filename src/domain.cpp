@@ -10,9 +10,9 @@ using namespace std;
 
 DomainWall::DomainWall(){
     L = 200;
-    N = 2001;
+    N = 4001;
     alpha = 0.01;
-    t_max = 1.;
+    t_max = 10.;
     std::vector<double> ivec(N);
     std::vector<double> iivec(N);
     std::vector<double> iiivec(N);
@@ -45,7 +45,6 @@ void DomainWall::set_initial_conditions(){
         new_state_phi[i] = init_cond.phi_init(offset1, offset2, sigma, i*dx);
         current_state_psi[i] = 0.0;
         new_state_psi[i] = 0.0;
-        std::cout << current_state_psi[i] << std::endl;
     }
     write_phi("output.txt");
 }

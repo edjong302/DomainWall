@@ -7,8 +7,8 @@ using namespace std;
 time_evolution::time_evolution(){
 	lambda = 2000.;
 	eta = 0.01;
-	woof = 0.;
-	kreiss = 0.8; // 1 for dissipation, 0 for not
+	woof = 0.001;
+	kreiss = 0.0; // 1 for dissipation, 0 for not
 }
 
 double time_evolution::the_Potential(double field){
