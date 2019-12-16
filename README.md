@@ -15,3 +15,9 @@ The field in either degenerate vacuum stays there and is not permanently pulled 
 When the potential is deformed so the vacua are no longer degenerate, the difference between vacua makes the wall moves towards the false vacuum.
 
 The walls can be seen to 'rebound' a little.
+
+
+<p float="left">
+  <img src="/Figures/Asymmetric.gif" width="350" />
+  <img src="/Figures/Potential_asymmetric.png" width="350" />
+</p>
