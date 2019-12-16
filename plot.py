@@ -36,14 +36,14 @@ images = []
 
 fname_template = "Figures/phi_at_time.{i}.txt"
 
-for i in range(0, np.shape(phi)[0], 10):
+for i in range(0, np.shape(phi)[0], 1):
     fig = plt.figure(figsize = (12,8))
-    fig.suptitle('Time step {}, time = {}'.format(i, t[-1]*i/N_time), fontsize=20)
+    fig.suptitle('Time step {} of {}, time = {}'.format(i, np.shape(phi)[0], t[-1]*i/N_time), fontsize=20)
     plt.ylabel('Field')
     plt.xlabel('x')
     plt.xlim([x[0], x[-1]])
     #plt.xlim([75, 125])
-    plt.ylim([-0.015, 0.015])
+    plt.ylim([-0.015, 2.6])
     plt.plot(x,phi[i,:], linewidth = line, color = 'black')
     plt.savefig("Figures/phi%04i.png" %float(i),bbox_inches = 'tight')
     plt.close()
@@ -51,4 +51,4 @@ for i in range(0, np.shape(phi)[0], 10):
     images.append(frame)
     print("Saved figure ", i, "of", np.shape(phi)[0])
 #    plt.savefig('Figures/figname_template.{i}.png'.format(i = i), bbox_inches = 'tight')
-images[0].save('Figures/Domain_Wall.gif', save_all=True, append_images=images[1:], duration=100, loop=0)
+images[0].save('Figures/Domain_Wall.gif', save_all=True, append_images=images[1:], duration=75, loop=0)

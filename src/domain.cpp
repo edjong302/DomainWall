@@ -9,10 +9,21 @@
 using namespace std;
 
 DomainWall::DomainWall(){
+    // Parameters concerning time evolution
     L = 200;
     N = 4001;
     alpha = 0.01;
-    t_max = 10.;
+    t_max = 350.;
+    // Parameters concerning potential
+    time_evol.set_lambda(.5);
+    time_evol.set_eta(1.); // mass of the field
+    time_evol.set_woof(-1.505); // regulates asymmetry in the potential. -1.5 is symmetric, more negative values introduce a new true vacuum
+    time_evol.set_kreiss(0.5); // Kreiss-Oliger parameter
+    // Parameters concerning initial conditions
+    init_cond.set_offset1(0.25);
+    init_cond.set_offset2(0.75);
+    init_cond.set_sigma(0.05);
+
     std::vector<double> ivec(N);
     std::vector<double> iivec(N);
     std::vector<double> iiivec(N);
@@ -69,8 +80,8 @@ void DomainWall::take_step(double i_steps){
     current_state_phi = new_state_phi;
     current_state_psi = new_state_psi;
     double dx = double(L)/(N - 1);
-    std::vector<double> phi_slope = time_evol.rk2_phi(current_state_phi, current_state_psi, dx, alpha);
-    std::vector<double> psi_slope = time_evol.rk2_psi(current_state_phi, current_state_psi, dx, alpha);
+    std::vector<double> phi_slope = time_evol.rk4_phi(current_state_phi, current_state_psi, dx, alpha);
+    std::vector<double> psi_slope = time_evol.rk4_psi(current_state_phi, current_state_psi, dx, alpha);
     for (int i = 0; i < N; i++){
         // if (i_steps == 4.){
         //     std::cout << psi_slope[i] << std::endl;

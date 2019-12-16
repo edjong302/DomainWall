@@ -5,18 +5,15 @@
 using namespace std;
 
 time_evolution::time_evolution(){
-	lambda = 2000.;
-	eta = 0.01;
-	woof = 0.001;
-	kreiss = 0.0; // 1 for dissipation, 0 for not
+	
 }
 
-double time_evolution::the_Potential(double field){
+double time_evolution::the_Potential(double field){ // This is not actually important for the evolution.
 	return lambda/4.0*pow((pow(field,2.) - pow(eta,2.)),2) - woof/(2.*eta)*(field - eta);
 }
 
-double time_evolution::dPotentialdfield(double field){
-	return lambda*field*(pow(field,2) - pow(eta,2)) - woof/(2*eta)*field;
+double time_evolution::dPotentialdfield(double field){ // This runs the evolution of the field.
+	return lambda*pow(field,3) + woof*pow(field, 2) + eta*field;
 }
 
 double time_evolution::get_lambda(){
@@ -25,6 +22,22 @@ double time_evolution::get_lambda(){
 
 double time_evolution::get_eta(){
 	return eta;
+}
+
+void time_evolution::set_lambda(double i_lambda){
+	lambda = i_lambda;
+}
+
+void time_evolution::set_eta(double i_eta){
+	eta = i_eta;
+}
+
+void time_evolution::set_woof(double i_woof){
+	woof = i_woof;
+}
+
+void time_evolution::set_kreiss(double i_kreiss){
+	kreiss = i_kreiss;
 }
 
 std::vector<double> time_evolution::rk1_phi(std::vector<double> i_vector, std::vector<double> ii_vector, double i_dx, double i_alpha){
