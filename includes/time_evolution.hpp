@@ -12,6 +12,10 @@ class time_evolution{
 		time_evolution();
 		double get_lambda();
 		double get_eta();
+		void set_lambda(double i_lambda);
+		void set_eta(double i_eta);
+		void set_woof(double i_woof);
+		void set_kreiss(double i_kreiss);
 		double the_Potential(double field);
 		double dPotentialdfield(double field);
 		std::vector<double> rk1_phi(std::vector<double> i_vector, std::vector<double> ii_vector, double i_dx, double i_alpha);

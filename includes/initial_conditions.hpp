@@ -10,6 +10,9 @@ class initial_conditions{
 		double get_offset1();
 		double get_offset2();
 		double get_sigma();
+		void set_offset1(double i_offset1);
+		void set_offset2(double i_offset2);
+		void set_sigma(double i_sigma);
 		double phi_init(double i_offset1, double i_offset2, double i_sigma, double i_x);
 		double psi_init(double i_offset1, double i_offset2, double i_sigma, double i_x);
 };
